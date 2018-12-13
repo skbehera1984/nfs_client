@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cd myrpc; make; cd ..; make
+

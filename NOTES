@@ -1,0 +1,52 @@
+An NFS client library:-
+---------------------
+This is a simple NFS client library that allows an application to read files stored on an NFS server. The library exports the following functions:
+
+int NFSmount(const char *host, const char *path)
+
+	Logically mounts the tree of an exported file system.
+	It must be called before any other function, and all successive function calls are relative to this location.
+
+FILE * NFSopen(char *filename)
+
+	Opens a file at the given pathname in the mounted location.
+	The file handle that it returns is not compatible with a regular file handle, and
+	client code must take care to use it only with this API's functions.
+
+int NFSread(void *ptr, int size, FILE * stream)
+
+	Reads the next size bytes from the given file, starting at the file's logical position,
+	into the character array ptr. The return value is the number of bytes read; -1 on error.
+
+int NFSclose(FILE * stream)
+
+	Closes the given file.
+
+------------------------------------------------------------------
+
+This has two pieces, the NFSClient piece and the API. The NFSClient must be running for programs using the API to operate.
+This is a Solaris program, and I don't believe the RPC calls work under other UNIXes.
+
+To make the NFSClient, either cd myrpc; make; cd ..; make or just execute RUNME, which will do this automatically.
+
+NFSClient is run with no arguments, and listens on UNIX socket /tmp/smNFS. Sorry, yes, this is hardcoded.
+
+The API is found in the api directory. You must make it separately. With my compiler, it works only when called from C, not C++. Your mileage may vary.
+
+To run your own code, compile with api/nfsapi.o and include api/nfsapi.h.
+
+To try my test program, compile api/tester.c. Usage is Tester hostname directory filename readsize.
+
+------------------------------------------------------------------
+
+The NFS client handles only one connection at a time, but no connection takes very long.
+
+Read requests must be for under 8000 bytes. This has to do with packet size. You don't want to know.
+
+Once 256 files are open simultaneously -- by all applications, since the client does not discriminate between requests in any way -- file handles begin to be overwritten. The client prints an error.
+
+If the client has problems opening sockets it quits gracefully, including returning a message over the socket to the application. The exception is if it is given a bad hostname to mount, in which case it just responds with failure rather than quitting.
+
+If the formatting of the code looks messed up, it's because the code was written half on a Mac (tab = 4 spaces).
+
+

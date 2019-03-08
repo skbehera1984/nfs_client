@@ -1,5 +1,5 @@
 
-CFLAGS = -pedantic
+CFLAGS = -pedantic -std=c99 -std=gnu99
 
 # LIBS = -lXt \
 #        -lX11 \

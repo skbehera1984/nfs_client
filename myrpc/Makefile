@@ -1,8 +1,8 @@
-CFLAGS = -pedantic
+CFLAGS = -pedantic -std=c99 -std=gnu99
 
-# LIBS =        -lXt \
-#       -lX11 \
-#       -lm
+# LIBS = -lXt \
+#        -lX11 \
+#        -lm
 
 LIBS = -lrpcsvc -lnsl
 
@@ -28,7 +28,7 @@ mount_xdr.o: mount_xdr.c
 	$(CC) -c mount_xdr.c $(CFLAGS)
 
 nfs: nfs_prot_clnt.o nfs_prot_xdr.o
-	
+
 nfs_prot_clnt.o:
 	$(CC) -c nfs_prot_clnt.c $(CFLAGS)
 

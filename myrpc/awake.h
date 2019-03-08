@@ -14,7 +14,7 @@ int do_NFSmount(char *arguments, int the_socket, diropargs * TMD,
 int do_NFSopen (char *arguments, int the_socket, diropargs * TMD,
 				int files_so_far, diropres * stupid, char *server,
 				char * TMDname, CLIENT * client);
-int do_NFSread (char *arguments, int the_socket, diropres ** diropres_table, 
+int do_NFSread (char *arguments, int the_socket, diropres ** diropres_table,
 				int * file_offset_table, char * server, CLIENT * client);
 int do_NFSclose(char *arguments, int the_socket);
 int mountDirectory(char *dirname, diropargs * doaout, char * server);

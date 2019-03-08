@@ -10,6 +10,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <time.h>
+#include <string.h>
 
 #include "mount.h"
 #include "nfs_prot.h"
@@ -30,25 +31,24 @@ int do_NFSmount(char *arguments, int the_socket, diropargs * TMD,
 	char * server;
 	int intresult;
 	int i;
-	
-  //  Get the host and pathnames
-	
+
+	/* Get the host and pathnames */
 	temp = (char *) strtok_r(arguments, "\n", (char **) lastposition);
 	printf("do_NFSmount: temp is %s\n", temp);
-	
+
 	server = temp;
-	
+
 	temp2 = (char *) strtok_r(arguments, "\n", (char **) lastposition);
 	printf("do_NFSmount: temp2 is %s\n", temp2);
 
 	mountpath = &temp2;
 	strcpy(TMDname, *mountpath);
-	
+
 	printf("do_NFSmount: server is %s\n", server);
 	printf("do_NFSmount: *mountpath is %s\n", *mountpath);
 
-  //  Do the mounting
-  
+	/* Do the mounting */
+
 	client = clnt_create(server, MOUNTPROG, MOUNTVERS, "udp");
 	if (client == NULL)
 	{
@@ -62,10 +62,10 @@ int do_NFSmount(char *arguments, int the_socket, diropargs * TMD,
 		client->cl_auth = authunix_create_default();
 
 		result = mountproc_mnt_1(mountpath, client);
-		
+
 		intresult = result->fhs_status;
 		printf("do_NFSmount: Result status is %d\n", intresult);
-	
+
 	  //  Okay, so what have we actually accomplished here?  We have
 	  //  made the RPC call that mounts the directory. That gets us
 	  //  the first file handle (the handle of the directory we mounted).
@@ -81,7 +81,7 @@ int do_NFSmount(char *arguments, int the_socket, diropargs * TMD,
 	  //  client thingie (and wouldn't it be nice to do this in an object-
 	  //  oriented language?)  We also need to pass out the name of the 
 	  //  server.
-	
+
 		if (intresult != 0)
 		{
 			printf("do_NFSmount: That indicates some kind of error... sorry.\n");
@@ -90,10 +90,10 @@ int do_NFSmount(char *arguments, int the_socket, diropargs * TMD,
 		{
 			memcpy(TMD->dir.data, result->fhs_fh, NFS_FHSIZE);
 		}
-	
+
 	  //  Okay, we are also going to create an NFS client and pass it back
 	  //  up, so we don't have to create a new NFS client every time.
-		
+
 		*clientout  = clnt_create(server, NFS_PROGRAM, NFS_VERSION, "udp");
 		if (*clientout == NULL)
 		{
